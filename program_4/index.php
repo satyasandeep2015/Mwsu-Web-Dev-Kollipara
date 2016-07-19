@@ -90,12 +90,18 @@ $.get( "http://mwsu-webdev.xyz/api/api.php/products?order=id&page=1,10")
 $.get( "http://mwsu-webdev.xyz/api/api.php/products?order=id&page=1,10")
   .done(function( data ) {  
   var rows = data.products.records;
-  var rec=data.products.records;
-    for(var j=0;j<rec.length;j++) 
+  //var rec=data.products.records;
+    for(var j=0;j<rows.length;j++) 
     {
         var row_body= "<tr>";
-        for(var i=0;i<rec[i].length;i++){
+        for(var i=0;i<rows[j].length;i++){ 
             console.log(rows[i]);
+            if(i==rows[j].length-1){
+                var imgstr = rows[j][i] .split(' ');
+                
+                var  newimgstr=imgstr[0].replace("~","50");
+                rows[j][i]= "<img src = " +newimgstr+">";
+            }
             row_body = row_body + "<td>"+rows[j][i]+"</td>";
         }
         row_body = row_body + "<td style=\"width: 36px;\"></td></tr>";
