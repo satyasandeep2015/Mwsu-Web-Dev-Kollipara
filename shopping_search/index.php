@@ -1,7 +1,4 @@
-<?php
-session_start();
-$sid = session_id();
-?>
+
 
 <!DOCTYPE html>
 <html>
@@ -13,9 +10,10 @@ $sid = session_id();
 	<script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	<script src="./plugin/jquery.twbsPagination.js"></script>
+	<script src="./js/cookies.js"></script>
 	
 	<!--[if IE]>
-		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 	<style>
 
@@ -70,13 +68,16 @@ $sid = session_id();
 		body {
 			padding:20px;
 		}
-		#custom-search-input {
+		
+
+
+    #custom-search-form {
         margin:0;
-        margin-top: 10px;
+        margin-top: 5px;
         padding: 0;
     }
  
-    #custom-search-input .search-query {
+    #custom-search-form .search-query {
         padding-right: 3px;
         padding-right: 4px \9;
         padding-left: 3px;
@@ -89,7 +90,7 @@ $sid = session_id();
         border-radius: 3px;
     }
  
-    #custom-search-input button {
+    #custom-search-form button {
         border: 0;
         background: none;
         /** belows styles are working good */
@@ -102,11 +103,15 @@ $sid = session_id();
         -webkit-border-radius: 3px;
         -moz-border-radius: 3px;
         border-radius: 3px;
-        color:#D9230F;
     }
  
     .search-query:focus + button {
         z-index: 3;   
+    }
+
+	#search_container{
+		padding-bottom:20px;
+	}
         
 	</style>
 </head>
@@ -123,15 +128,25 @@ $sid = session_id();
      </table>
   </div>
 	<div class="col-xs-6 col-sm-4">
-		
+		<div class="row" id="search_container">
+        <div class="span12">
+            <form id="custom-search-form" class="form-search form-horizontal pull-right">
+                <div class="input-append span12">
+                    <input type="text" class="search-query" placeholder="Search" id="search-keys">
+                    <button type="submit" class="btn" id="search-btn"><i class="glyphicon glyphicon-search"></i></button>
+                </div>
+            </form>
+        </div>
+	</div>
+	<div class="row">
 			<div class="panel panel-info">
 				<div class="panel-heading">
 					<div class="panel-title">
 						<div class="row">
-							<div class="col-xs-7">
+							<div class="col-xs-6">
 								<h5><span class="glyphicon glyphicon-shopping-cart"></span> Shopping Cart</h5>
 							</div>
-							<div class="col-xs-5">
+							<div class="col-xs-6">
 								<button type="button" class="btn btn-primary btn-sm btn-block">
 									<span class="glyphicon glyphicon-share-alt"></span> Continue shopping
 								</button>
@@ -139,9 +154,8 @@ $sid = session_id();
 						</div>
 					</div>
 				</div>
-				<div class="panel-body" > 
+				<div class="panel-body" >
 					<div id="cart-body">
-												
 					</div>
 
 					<div class="row">
@@ -150,7 +164,7 @@ $sid = session_id();
 								<h6 class="text-right">Added items?</h6>
 							</div>
 							<div class="col-xs-4">
-								<button type="button" class=" btn-default btn-sm btn-block" id="updateCart">
+								<button type="button" class="btn btn-default btn-sm btn-block" id="updateCart">
 									Update cart
 								</button>
 							</div>
@@ -171,6 +185,8 @@ $sid = session_id();
 				</div>
 			</div>
 		</div>
+	</div>	
+		
 </div>
 
 <div class="row">
@@ -244,9 +260,12 @@ $sid = session_id();
 <script>
 
 (function($) {
-    //http://esimakin.github.io/twbs-pagination/
+    //https://esimakin.github.io/twbs-pagination/
 	
-	var guid = <?php echo"\"{$sid}\";";?>
+	var guid = "r8rhqrtdm867hprcrhb7o0nc76";	
+	//Cookies.set('test_cookie', guid,{ expires: Infinity , domain: 'mwsu-webdev.xyz'});
+	
+	console.log(Cookies.get('test_cookie'));
 	
 	console.log(guid);
 
@@ -308,8 +327,8 @@ $sid = session_id();
         myWait.show();
                 
         // Perform a get request to our api passing the page number and page size as parameters
-		//console.log("http://mwsu-webdev.xyz/api/api.php/products?order="+sort+"&page=" + page + "," + page_size);
-        $.get("https://45.55.32.249/api/api.php/products?order="+sort+order+"&page=" + page + "," + page_size)
+		console.log("https://mywebdevcourse.xyz/api/api.php/products?order="+sort+order+"&page=" + page + "," + page_size);
+        $.get("https://mywebdevcourse.xyz/api/api.php/products?order="+sort+order+"&page=" + page + "," + page_size)
 
         // The '.done' method fires when the get request completes
         .done(function(data) {
@@ -342,7 +361,7 @@ $sid = session_id();
             for (var i = 0; i < records.length; i++) {
 
                 //Start a new row for each product and put the product id in a data-element
-                rows = rows + "<tr data-id="+records[i][0]+">";
+                rows = rows + "<tr data-id="+records[i][0]+" id=id"+records[i][0]+">";
 
                 // Loop through each item for a product and append a table data tag to our row
                 for (var j = 0; j < records[i].length; j++) {
@@ -382,18 +401,23 @@ $sid = session_id();
     
 
         });
-    }
+    } // End .done
 	
-	
+	$('#updateCart').click(function(){
+		$('.cart-item').each(function(){
+			console.log($(this).find('.price').text());
+			console.log($(this).find('.count').val());
+
+		});
+	});
     
     function getTotalPages(){
-        $.get("https://45.55.32.249/api/api.php/products")
+        $.get("https://mywebdevcourse.xyz/shopping_search/total_pages.txt")
 
         // The '.done' method fires when the get request completes
         .done(function(data) {
 
-            total_records = data.products.records.length;
-            total_pages = parseInt(total_records / page_size);
+            var total_pages = data;
             loadTableData(1, 10);
             $('#pagination-demo').twbsPagination({
                 totalPages: total_pages,
@@ -407,39 +431,30 @@ $sid = session_id();
         });
 
     }
-    $('#updateCart').click(function(){
-		var sum=0;
-		//var totalprice;
-		$('.cart-item').each(function(){
-			
-			//console.log($(this).find('.price').text());
-			//console.log($(this).find('.count').val());
-			var itemprice=$(this).find('.price').text();
-			var itemcount=$(this).find('.count').val();
-			 
-				if (itemprice)
-				{
-					console.log(itemprice);
-					console.log(itemcount);
-					totalprice=itemprice*itemcount;
-				}
-				else
-					totalprice=0;
-				
-				if(isNaN(sum))
-				sum =0
-				sum=sum+totalprice;
-				
-			 //console.log(sum);  
+	
+	$('#search-btn').click(function(event){
+		event.preventDefault();
+		key = $('#search-keys').val();
+		console.log(key);
+		var keysplit= key.split(" ");
+		//console.log(keysplit[0]);
+		//console.log(keysplit[1]);
+		//$('#search-btn').html
+		url="https://mywebdevcourse.xyz/api/api.php/products?&filter[]=desc,cs," + keysplit[0] + "&filter[]=desc,cs,"+ keysplit[1] + "&satisfy=all" ;
+		console.log(url); 
+
+        $.get(url)
+
+        // The '.done' method fires when the get request completes
+        .done(function(data) {
+			console.log(data); 
 		});
-	//sum=sum+totalprice;
-	console.log(sum);
-	$('#cart-total').text(sum)
 	});
+    
 	function addCartItem(item){
-		
+		 
 		var row=''+
-		'<div class="row cart-item" id="item-'+item[0]+'">'+ 
+		'<div class="row cart-item" id="item-'+item[0]+'">'+
 			'<div class="col-xs-2">'+ item[4] +
 			'</div>'+
 			'<div class="col-xs-3">'+
@@ -447,24 +462,21 @@ $sid = session_id();
 			'</div>'+
 			'<div class="col-xs-7">'+
 			'	<div class="col-xs-4 text-right">'+
-			'		<h6><strong>$<span class="price">'+item[3]+'</span><span class="text-muted">x</span></strong></h6>'+
+			'		<h6><strong><span class="price">$'+item[3]+'</span><span class="text-muted"> x </span></strong></h6>'+
 			'	</div>'+
 			'	<div class="col-xs-5">'+
 			'		<input type="text" class="form-control input-sm count" value="1">'+
 			'	</div>'+
 			'	<div class="col-xs-2">'+
-			'		<button type="button" class="delbtn btn-link btn-xs" >'+
-			'			<span class="glyphicon glyphicon-trash"> </span>'+ 
+			'		<button type="button" class="btn btn-link btn-xs">'+
+			'			<span class="glyphicon glyphicon-trash"> </span>'+
 			'		</button>'+
 			'	</div>'+
 			'</div>'+
 		'</div>'+
 		'<hr>';
 		
-			 
-		
 		var postData = {};
-		var num_items ;
 		postData['uid']=guid;
 		postData['pid']=item[0];
 		postData['count']=1;
@@ -476,30 +488,16 @@ $sid = session_id();
 		var cartTotal = parseFloat($('#cart-total').text());
 		if(isNaN(cartTotal))
 			cartTotal = 0;
-		//cartTotal = $('#updateCart')
-		cartTotal = cartTotal  + parseFloat(item[3] );
+
+		cartTotal += parseFloat(item[3]);
 		console.log(cartTotal);
-		$('#cart-body').append(row); 
-		
-		$('.delbtn ').click(function(){
-			$this = $(this); 
-			$this.closest('.row').remove();
-		}); 	
-		
-		//var bla = $('#count').val();
-		//console.log(bla);
-		
-
+		$('#cart-body').append(row);
 		$('#cart-total').text(cartTotal)
-		$.post("https://45.55.32.249/api/api.php/shopping_cart/",postData); 
-		
-		
-		
+		$.post("https://mywebdevcourse.xyz/api/api.php/shopping_cart/",postData);
 	}
-	
 
  
- 
+    
 	 function guid() {
 	  function s4() {
 		return Math.floor((1 + Math.random()) * 0x10000)
