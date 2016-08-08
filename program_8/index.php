@@ -187,12 +187,26 @@
 				var cat = String(rows[i][1]).trim();
 				console.log(cat);
 				if(i==0)
-				var categoriesButton = '<a href="#" class="list-group-item active id="categry"">'+cat+'<a>';
+				var categoriesButton = '<a href="#" class="list-group-item id='+cat+'">'+cat+'<a>';
 				else
-				var categoriesButton = '<a href="#" class="list-group-item ">'+cat+'<a>';
+				var categoriesButton = '<a href="#" class="list-group-item id='+cat+'">'+cat+'<a>';
 				$('#categories').append(categoriesButton);
+                
+
 			}
-			
+                                      //$('#categories').each(function(){
+                $('.list-group-item').click(function(){
+                    $this = $(this); 
+                    console.log($this.text());
+                    //var divObj = event.target.id;
+                    //console.log(divObj);
+                    $('#products').empty();
+                    loadProductData(page,12,$this.text());
+		
+                });
+	
+            //});
+
 	});
 
     function loadProductData(page, page_size,category) {
@@ -202,10 +216,10 @@
         myWait.show();
                 
         // Perform a get request to our api passing the page number and page size as parameters
-		//console.log("http://mwsu-web-dev.xyz/api/api.php/products?page=" + page + "," + page_size&filter=categor,eq,"+category);
+		//console.log("http://mwsu-web-dev.xyz/api/api.php/products?page=" + page + "," + page_size&filter=categor,eq"+category);
 		
 		if(category)
-			var url = "https://webdevkollipara.xyz/api/api.php/products?page=" + page + "," + page_size + "&filter=category,eq," + category + "&order=id";
+			var url = "https://webdevkollipara.xyz/api/api.php/products?page=" + page + "," + page_size + "&filter=category,eq" + category + "&order=id";
 		else
 			var url = "https://webdevkollipara.xyz/api/api.php/products?page=" + page + "," + page_size + "&order=id";
 	
@@ -275,11 +289,11 @@
 		var desc = item.description.substring(0,40) + '...';
 		
 		var itemdata = '';
-		itemdata += '<div class="col-sm-4 col-lg-4 col-md-4">'+
-		'	<div class="thumbnail">'+
+		itemdata += '<div class="col-sm-4 col-lg-4 col-md-4" >'+
+		'	<div class="thumbnail" id='+item.id+'>'+
 		'		'+item.image +
 		'		<div class="caption">'+
-		'			<h4 class="pull-right">$'+item.price+'</h4>'+
+		'			<h4 class="pull-right" >$'+item.price+'</h4>'+
 		'			<h4><a href="#">'+name+'</a>'+
 		'			</h4>'+
 		'			<p>'+desc+'</p>'+
@@ -297,16 +311,59 @@
 		'	</div>'+
 		'</div>';
 		$('#products').append(itemdata);
-		
+        //console.log(item.id);
+		$('#'+item.id+'').click(function(event){
+           
+            $this = $(this);
+           //console.log($this.find("id"));
+            /* var sd=($this.attr('class'));
+            var sl=sd.split("=");
+           required_id=sl[2];
+            console.log(required_id); */
+            var url = 'https://webdevkollipara.xyz/api/api.php/products?filter=id,eq,'+item.id+'&order=id';
+           // window.open(url, '_blank');
+            event.preventDefault()
+			console.log(url);
+        $.get(url)
+        .done(function(data) {
+          
+        var records = data.products.records;
+        
+        console.log("+++++++++++++++++++");
+        console.log(records);
+        console.log(records[0][0]);
+        console.log("++++++++++++++++++++++++");
+	
+            item.id = records[0][0];
+            console.log("sandeep");
+             var result = records[0][4] .split(' ');
+             var img = result[0].replace("~","100");
+             item.image = "<img width=\"100\" src="+img+">";
+            console.log(item.id);
+        var itemHtml = '';
+		itemHtml +=  '<div align="bottom" class="col-md-9">'+
+                '<div class="thumbnail">'+
+                 item.image+
+                  '  <div class="caption-full">'+
+                   '     <h4 class="pull-right">'+item.price+'</h4>'+
+                    '    <h4><a href="#">Product Name</a>'+
+                     '   </h4>'+
+                    '</div>'+
+                    '<p> '+item.description+''+
+					'</p>'+
+                '</div>'+
+				'</div>';
+                console.log(item.price);
+				console.log(item.image);
+		//$('#carousel-example-generic').empty();
+		$('#products').empty();
+		$('#products').append(itemHtml);
+        });
+       
+        });
 	}
 	
-		$('#categry').click(function(){
-			$this = $(this); 
-			console.log("hi");
-			
-			
-		});
-	
+		
 	$('#updateCart').click(function(){
 		$('.cart-item').each(function(){
 			console.log($(this).find('.price').text());
